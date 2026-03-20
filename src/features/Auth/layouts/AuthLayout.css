@@ -1,0 +1,24 @@
+.stripes {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.stripe {
+  position: absolute;
+  width: 200%;
+  height: 1px;
+  background: var(--color-c-periwinkle);
+  opacity: 0.3;
+  top: 50%;
+  left: 50%;
+}
+
+.stripe:first-child {
+  transform: translate(-50%, -50%) rotate(55deg);
+}
+
+.stripe:last-child {
+  transform: translate(-50%, -50%) rotate(-55deg);
+}

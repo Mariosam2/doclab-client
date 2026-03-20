@@ -1,0 +1,29 @@
+.asymmetric-card {
+  --notch-size: 24px;
+
+  position: relative;
+  border-radius: 1.5rem;
+  border-top-right-radius: 0;
+  margin-top: var(--notch-size);
+  margin-right: var(--notch-size);
+}
+
+.asymmetric-card::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  width: var(--notch-size);
+  height: var(--notch-size);
+  background: inherit;
+  mask-image: radial-gradient(
+    circle at 100% 100%,
+    transparent var(--notch-size),
+    black var(--notch-size)
+  );
+  -webkit-mask-image: radial-gradient(
+    circle at 100% 100%,
+    transparent var(--notch-size),
+    black var(--notch-size)
+  );
+}
