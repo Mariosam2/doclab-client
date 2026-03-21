@@ -1,5 +1,6 @@
 @import url("./fonts.css");
 @import "tailwindcss";
+@import "@heroui/styles";
 
 @theme {
   --color-c-periwinkle: #ccccff;
@@ -7,6 +8,7 @@
   --color-c-medium-purple: #9966ff;
   --color-c-electric-violet: #9933ff;
   --color-c-dark: #1a0a2e;
+  --color-c-muted: #c1c1c1;
   --font-sans: "Satoshi", sans-serif;
   --font-serif: "Lora", serif;
   --font-satoshi: "Satoshi", sans-serif;
@@ -24,7 +26,7 @@
 @utility form-group {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  padding-bottom: 16px;
 }
 
 button {
@@ -33,4 +35,39 @@ button {
 
 button:active {
   transform: scale(0.92);
+}
+
+.btn-primary.loading {
+  pointer-events: none;
+  opacity: 0.8;
+  position: relative;
+  color: transparent;
+}
+
+.btn-primary.loading::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 20px;
+  height: 20px;
+  border: 2.5px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #f0f9ff inset;
+  border-radius: 16px;
+  -webkit-text-fill-color: inherit;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

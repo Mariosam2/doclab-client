@@ -1,43 +1,44 @@
 import { useForm } from "react-hook-form";
-import { Envelope } from "../../../shared/ui/Icons/Envelope";
-import { Lock } from "../../../shared/ui/Icons/Lock";
+import Envelope from "@src/shared/ui/Icons/Envelope";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "../../../shared/schemas/LoginSchema";
 import { showToast } from "../../../shared/helpers";
 import { ToastType } from "../../../shared/enums/ToastType.enum";
+import "./LoginForm.css";
+import type { LoginFormPayload } from "@src/shared/types/schemas";
+import { useLoginMutation } from "@src/store/api/authSlice";
+import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { NavLink } from "react-router";
+import InputPassword from "@src/shared/ui/InputPassword/InputPassword";
 
 const LoginForm = () => {
+  const [login, { isLoading }] = useLoginMutation();
+
   const {
     register,
     handleSubmit,
 
-    formState: { errors },
-  } = useForm<LoginForm>({
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormPayload>({
     defaultValues: {
-      identifier: "",
+      email: "",
       password: "",
     },
     resolver: zodResolver(LoginSchema),
   });
 
+  const isLoadingButton = isLoading || isSubmitting;
+
   const handleLogin = handleSubmit(async (data) => {
     try {
-      const isEmail = data.identifier.includes("@");
-      const payload = isEmail
-        ? { email: data.identifier, password: data.password }
-        : { username: data.identifier, password: data.password };
-
-      //await login(payload).unwrap();
+      await login(data).unwrap();
     } catch (error) {
-      showToast("Error", (error as Error).message, ToastType.DANGER);
+      showToast("Login failed", ((error as FetchBaseQueryError).data as { message: string }).message, ToastType.DANGER);
     }
   });
 
   return (
-    <form
-      className="w-full min-h-125 max-w-md p-6 relative "
-      id="loginForm"
-      onSubmit={handleLogin}>
+    <form className="w-full min-h-125 max-w-md p-6 relative " id="loginForm" onSubmit={handleLogin}>
       <div className="heading flex flex-col gap-y-2.5 mb-8">
         <div className="logo"></div>
         <h2 className="text-3xl font-bold text-c-dark">Sign In</h2>
@@ -46,42 +47,33 @@ const LoginForm = () => {
         <div className="bg-sky-50 rounded-2xl flex items-center">
           <Envelope className="size-6 py-1 ms-1" />
           <input
-            className="p-2.5   focus-within:outline-none focus-within:ring-0"
-            {...register("identifier")}
+            className="p-2.5 focus-within:outline-none placeholder:text-c-muted focus-within:ring-0 grow"
+            placeholder="john.doe@example.mail"
+            {...register("email")}
             type="text"
-            name="identifier"
-            id="identifier"
+            name="email"
+            id="email"
           />
         </div>
 
-        <span
-          className={`h-4 inline-block text-red-500 ${errors.identifier ? "opacity-100" : "opacity-0"}`}>
-          {errors.identifier?.message}
+        <span className={`h-4 inline-block text-red-500 ${errors.email ? "opacity-100" : "opacity-0"}`}>
+          {errors.email?.message}
         </span>
       </div>
-      <div className="form-group">
-        <div className="bg-sky-50 rounded-2xl flex items-center">
-          <Lock className="size-6 py-1 ms-1" />
-          <input
-            className="p-2.5   focus-within:outline-none focus-within:ring-0"
-            {...register("password")}
-            type="text"
-            name="password"
-            id="password"
-          />
-        </div>
-
-        <span
-          className={`h-4 inline-block text-red-500 ${errors.password ? "opacity-100" : "opacity-0"}`}>
-          {errors.password?.message}
-        </span>
-      </div>
-      <div className="actions">
+      <InputPassword register={register("password")} error={errors.password} placeholder="••••••••" />
+      <div className="actions mb-2.5">
         <button
           type="submit"
-          className="btn-primary w-full mt-4 p-2.5 text-white text-shadow-white cursor-pointer ">
+          disabled={isLoadingButton}
+          className={`btn-primary w-full mt-4 p-2.5 text-white text-shadow-white cursor-pointer ${isLoadingButton ? "loading" : ""}`}>
           Sign In
         </button>
+      </div>
+      <div className="text-c-dark">
+        Don't have an account?
+        <NavLink to="/auth/register" className="text-c-electric-violet font-medium ms-1.5">
+          Sign up
+        </NavLink>
       </div>
     </form>
   );

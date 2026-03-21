@@ -4,6 +4,7 @@ import NotFound from "./features/NotFound/NotFound";
 import LoginForm from "./features/Auth/LoginForm/LoginForm";
 import Documents from "./features/Dashboard/components/Documents/Documents";
 import App from "./App";
+import RegisterForm from "./features/Auth/Register/RegisterForm";
 
 const router = createBrowserRouter([
   {
@@ -34,10 +35,10 @@ const router = createBrowserRouter([
             path: "login",
             element: <LoginForm />,
           },
-          /*   {
-            path: "/login",
-            element: <LoginForm />,
-          }, */
+          {
+            path: "register",
+            element: <RegisterForm />,
+          },
         ],
       },
       {

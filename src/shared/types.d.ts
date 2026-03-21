@@ -1,1 +1,0 @@
-type LoginForm = z.infer<typeof LoginSchema>;

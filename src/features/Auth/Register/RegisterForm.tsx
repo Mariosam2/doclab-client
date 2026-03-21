@@ -1,75 +1,133 @@
 import { useForm } from "react-hook-form";
-import { Envelope } from "../../../shared/ui/Icons/Envelope";
-import { Lock } from "../../../shared/ui/Icons/Lock";
+import Envelope from "../../../shared/ui/Icons/Envelope";
+import { NavLink } from "react-router";
+import { useRegisterMutation } from "@src/store/api/authSlice";
+import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { ToastType } from "@src/shared/enums/ToastType.enum";
+import { showToast } from "@src/shared/helpers";
+import type { RegisterFormPayload } from "@src/shared/types/schemas";
+import { RegisterSchema } from "@src/shared/schemas/RegisterSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import InputPassword from "@src/shared/ui/InputPassword/InputPassword";
 
 const RegisterForm = () => {
+  const [signup, { isLoading }] = useRegisterMutation();
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm({
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterFormPayload>({
     defaultValues: {
-      identifier: "",
+      firstname: "",
+      lastname: "",
+      username: "",
+      email: "",
       password: "",
+      confirmPassword: "",
     },
+    resolver: zodResolver(RegisterSchema),
   });
 
-  const handleLogin = handleSubmit((data) => {
+  const isLoadingButton = isLoading || isSubmitting;
+
+  const handleRegister = handleSubmit(async (data) => {
     try {
+      await signup(data).unwrap();
     } catch (error) {
-      //toast error
+      showToast(
+        "Register failed",
+        ((error as FetchBaseQueryError).data as { message: string }).message,
+        ToastType.DANGER,
+      );
     }
   });
 
   return (
-    <form
-      className="w-full min-h-125 max-w-md p-6 relative "
-      id="loginForm"
-      onSubmit={handleLogin}>
+    <form className="w-full min-h-125 max-w-lg p-6 relative" id="registerForm" onSubmit={handleRegister}>
       <div className="heading flex flex-col gap-y-2.5 mb-8">
         <div className="logo"></div>
-        <h2 className="text-3xl font-bold text-c-dark">Sign In</h2>
+        <h2 className="text-3xl font-bold text-c-dark">Sign Up</h2>
       </div>
+
+      <div className="flex gap-3">
+        <div className="form-group flex-1">
+          <div className="bg-sky-50 rounded-2xl flex items-center">
+            <input
+              className="p-2.5 focus-within:outline-none placeholder:text-c-muted focus-within:ring-0 grow"
+              placeholder="John"
+              {...register("firstname")}
+              type="text"
+            />
+          </div>
+          <span className={`h-4 inline-block text-red-500 ${errors.firstname ? "opacity-100" : "opacity-0"}`}>
+            {errors.firstname?.message}
+          </span>
+        </div>
+
+        <div className="form-group flex-1">
+          <div className="bg-sky-50 rounded-2xl flex items-center">
+            <input
+              className="p-2.5 focus-within:outline-none placeholder:text-c-muted focus-within:ring-0 grow"
+              placeholder="Doe"
+              {...register("lastname")}
+              type="text"
+            />
+          </div>
+          <span className={`h-4 inline-block text-red-500 ${errors.lastname ? "opacity-100" : "opacity-0"}`}>
+            {errors.lastname?.message}
+          </span>
+        </div>
+      </div>
+
+      <div className="form-group">
+        <div className="bg-sky-50 rounded-2xl flex items-center">
+          <input
+            className="p-2.5 focus-within:outline-none placeholder:text-c-muted focus-within:ring-0 grow"
+            placeholder="johndoe1234"
+            {...register("username")}
+            type="text"
+          />
+        </div>
+        <span className={`h-4 inline-block text-red-500 ${errors.username ? "opacity-100" : "opacity-0"}`}>
+          {errors.username?.message}
+        </span>
+      </div>
+
       <div className="form-group">
         <div className="bg-sky-50 rounded-2xl flex items-center">
           <Envelope className="size-6 py-1 ms-1" />
           <input
-            className="p-2.5   focus-within:outline-none focus-within:ring-0"
-            {...register("identifier")}
+            className="p-2.5 focus-within:outline-none placeholder:text-c-muted focus-within:ring-0 grow"
+            placeholder="john.doe@example.mail"
+            {...register("email")}
             type="text"
-            name="identifier"
-            id="identifier"
           />
         </div>
-
-        <span
-          className={`h-4 inline-block text-red-500 ${errors.identifier ? "opacity-100" : "opacity-0"}`}>
-          {errors.identifier?.message}
+        <span className={`h-4 inline-block text-red-500 ${errors.email ? "opacity-100" : "opacity-0"}`}>
+          {errors.email?.message}
         </span>
       </div>
-      <div className="form-group">
-        <div className="bg-sky-50 rounded-2xl flex items-center">
-          <Lock className="size-6 py-1 ms-1" />
-          <input
-            className="p-2.5   focus-within:outline-none focus-within:ring-0"
-            {...register("password")}
-            type="text"
-            name="password"
-            id="password"
-          />
-        </div>
 
-        <span
-          className={`h-4 inline-block text-red-500 ${errors.password ? "opacity-100" : "opacity-0"}`}>
-          {errors.password?.message}
-        </span>
-      </div>
-      <div className="actions">
+      <InputPassword register={register("password")} error={errors.password} />
+      <InputPassword
+        register={register("confirmPassword")}
+        error={errors.confirmPassword}
+        placeholder="Confirm password"
+      />
+
+      <div className="actions mb-2.5">
         <button
           type="submit"
-          className="btn-primary w-full mt-4 p-2.5 text-white text-shadow-white cursor-pointer ">
+          disabled={isLoadingButton}
+          className={`btn-primary w-full mt-4 p-2.5 text-white text-shadow-white cursor-pointer ${isLoadingButton ? "loading" : ""}`}>
           Sign Up
         </button>
+      </div>
+      <div className="text-c-dark">
+        Already have an account?
+        <NavLink to="/auth/login" className="text-c-electric-violet font-medium ms-1.5">
+          Sign in
+        </NavLink>
       </div>
     </form>
   );

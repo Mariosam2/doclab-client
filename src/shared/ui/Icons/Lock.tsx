@@ -2,7 +2,7 @@ interface LockProps {
   className?: string;
 }
 
-export const Lock = ({ className }: LockProps) => {
+const Lock = ({ className }: LockProps) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -19,3 +19,5 @@ export const Lock = ({ className }: LockProps) => {
     </svg>
   );
 };
+
+export default Lock;
