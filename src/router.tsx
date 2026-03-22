@@ -5,6 +5,8 @@ import LoginForm from "./features/Auth/LoginForm/LoginForm";
 import Documents from "./features/Dashboard/components/Documents/Documents";
 import App from "./App";
 import RegisterForm from "./features/Auth/Register/RegisterForm";
+import Summary from "./features/Dashboard/components/Summary/Summary";
+import Editor from "./features/Dashboard/components/Editor/Editor";
 
 const router = createBrowserRouter([
   {
@@ -50,9 +52,20 @@ const router = createBrowserRouter([
 
         children: [
           {
-            path: "documents",
             element: <Documents />,
             index: true,
+          },
+          {
+            path: "documents",
+            element: <Documents />,
+          },
+          {
+            path: "summary",
+            element: <Summary />,
+          },
+          {
+            path: "documents/:documentId",
+            element: <Editor />,
           },
         ],
       },

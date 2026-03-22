@@ -6,7 +6,7 @@ export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getProfile: builder.query<IApiResponse<IUser>, void>({
       query: (payload) => ({
-        url: "/profile",
+        url: import.meta.env.VITE_API_PREFIX + "/profile",
         method: "GET",
         body: payload,
       }),
