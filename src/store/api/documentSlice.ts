@@ -1,28 +1,38 @@
-import type { IDocument } from "@src/shared/interfaces/document/IDocument";
-import { apiSlice } from "./apiSlice";
-import type { IApiResponse } from "@src/shared/interfaces/api/IApiResponse";
-import * as z from "zod";
-import type { AddDocumentSchema } from "@src/shared/schemas/AddDocumentSchema";
+import { apiSlice } from './apiSlice';
+import type { IApiResponse } from '@src/shared/interfaces/api/IApiResponse';
+import * as z from 'zod';
+import type { AddDocumentSchema } from '@src/shared/schemas/AddDocumentSchema';
+import type { IDocumentsResponse } from '@src/shared/interfaces/api/IDocumentsResponse';
+import type { GenerateInviteSchema } from '@src/shared/schemas/GenerateInviteLinkSchema';
 
-export const authApi = apiSlice.injectEndpoints({
+export const documentApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getDocuments: builder.query<IApiResponse<IDocument[]>, void>({
+    getDocuments: builder.query<IApiResponse<IDocumentsResponse>, void>({
       query: (payload) => ({
-        url: import.meta.env.VITE_API_PREFIX + "/documents",
-        method: "GET",
+        url: import.meta.env.VITE_API_PREFIX + '/documents',
+        method: 'GET',
         body: payload,
       }),
-      providesTags: ["Documents"],
+      providesTags: ['Documents'],
     }),
+
+    generateInviteLink: builder.mutation<IApiResponse<{ inviteLink: string }>, z.infer<typeof GenerateInviteSchema>>({
+      query: ({ documentId, ...body }) => ({
+        url: import.meta.env.VITE_API_PREFIX + `/documents/invite-link/${documentId}`,
+        method: 'POST',
+        body,
+      }),
+    }),
+
     createDocument: builder.mutation<IApiResponse<void>, z.infer<typeof AddDocumentSchema>>({
       query: (payload) => ({
-        url: import.meta.env.VITE_API_PREFIX + "/documents/add-document",
-        method: "POST",
+        url: import.meta.env.VITE_API_PREFIX + '/documents/add-document',
+        method: 'POST',
         body: payload,
       }),
-      invalidatesTags: ["Documents"],
+      invalidatesTags: ['Documents'],
     }),
   }),
 });
 
-export const { useGetDocumentsQuery, useCreateDocumentMutation } = authApi;
+export const { useGetDocumentsQuery, useCreateDocumentMutation, useGenerateInviteLinkMutation } = documentApi;

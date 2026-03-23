@@ -1,21 +1,56 @@
-import ShareButton from "@src/shared/ui/ShareButton/ShareButton";
-import CreateDocument from "./components/CreateDocument/CreateDocument";
-import "./Documents.css";
-import DocumentList from "./components/DocumentList/DocumentList";
-import { useGetProfileQuery } from "@src/store/api/profileSlice";
+import ShareButton from '@src/shared/ui/ShareButton/ShareButton';
+import CreateDocument from './components/CreateDocument/CreateDocument';
+import './Documents.css';
+import DocumentList from './components/DocumentList/DocumentList';
+import { useGetProfileQuery } from '@src/store/api/profileSlice';
+import { useState } from 'react';
+import Loader from '@src/shared/ui/Loader/Loader';
+import { useGetDocumentsQuery } from '@src/store/api/documentSlice';
 
 const Documents = () => {
-  const { data: profile } = useGetProfileQuery();
+  const { data: profile, isLoading: profileLoading } = useGetProfileQuery();
+  const { data, isLoading: documentsLoading } = useGetDocumentsQuery();
+  const [isCreating, setIsCreating] = useState(false);
+  const [activeTab, setActiveTab] = useState<'mine' | 'shared'>('mine');
+
+  const isLoading = profileLoading || isCreating;
 
   return (
-    <section className="documents w-full  relative py-12  px-12 flex flex-col flex-1">
-      <h1 className="text-4xl mb-12 font-bold">
-        Welcome {profile?.data.firstname + " " + profile?.data.lastname + "!"}
-      </h1>
-      <CreateDocument />
-      <ShareButton className="absolute top-12 translate-y-1/2 right-12 flex items-center" />
-      <DocumentList />
-    </section>
+    <>
+      <Loader isLoading={isLoading} variant="dashboard" />
+      {!isLoading && (
+        <section className="documents w-full  relative py-12  px-12 flex flex-col flex-1">
+          <h1 className="text-4xl mb-12 font-bold">
+            Welcome {profile?.data.firstname + ' ' + profile?.data.lastname + '!'}
+          </h1>
+          <CreateDocument onLoadingChange={setIsCreating} />
+          <ShareButton className="absolute top-12  right-12 flex items-center shadow-md px-2.5 py-1.5 cursor-pointer bg-c-electric-violet will-change-transform text-sky-50" />
+
+          <div className="flex gap-2 mt-6">
+            <button
+              onClick={() => setActiveTab('mine')}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 will-change-transform cursor-pointer ${
+                activeTab === 'mine' ? 'bg-c-medium-purple text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+              }`}
+            >
+              My documents
+            </button>
+            <button
+              onClick={() => setActiveTab('shared')}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 will-change-transform cursor-pointer ${
+                activeTab === 'shared' ? 'bg-c-medium-purple text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+              }`}
+            >
+              Shared with me
+            </button>
+          </div>
+
+          <DocumentList
+            documents={activeTab === 'mine' ? data?.data.userDocuments || [] : data?.data.editorDocuments || []}
+          />
+        </section>
+      )}
+    </>
   );
 };
 

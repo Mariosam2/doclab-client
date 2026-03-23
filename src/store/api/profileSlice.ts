@@ -2,7 +2,7 @@ import type { IUser } from "@src/shared/interfaces/IUser";
 import { apiSlice } from "./apiSlice";
 import type { IApiResponse } from "@src/shared/interfaces/api/IApiResponse";
 
-export const authApi = apiSlice.injectEndpoints({
+export const profileApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getProfile: builder.query<IApiResponse<IUser>, void>({
       query: (payload) => ({
@@ -14,4 +14,4 @@ export const authApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useGetProfileQuery } = authApi;
+export const { useGetProfileQuery } = profileApi;
