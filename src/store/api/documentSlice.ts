@@ -24,6 +24,13 @@ export const documentApi = apiSlice.injectEndpoints({
       }),
     }),
 
+    acceptInvite: builder.mutation<IApiResponse<void>, { inviteToken: string }>({
+      query: ({ inviteToken }) => ({
+        url: import.meta.env.VITE_API_PREFIX + `/documents/accept-invite/${inviteToken}`,
+        method: 'POST',
+      }),
+    }),
+
     createDocument: builder.mutation<IApiResponse<void>, z.infer<typeof AddDocumentSchema>>({
       query: (payload) => ({
         url: import.meta.env.VITE_API_PREFIX + '/documents/add-document',
@@ -35,4 +42,4 @@ export const documentApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useGetDocumentsQuery, useCreateDocumentMutation, useGenerateInviteLinkMutation } = documentApi;
+export const { useGetDocumentsQuery, useCreateDocumentMutation, useGenerateInviteLinkMutation, useAcceptInviteMutation } = documentApi;
