@@ -2,12 +2,13 @@ import { Modal, Skeleton } from '@heroui/react';
 import ClipboardCopy from '../Icons/ClipboardCopy';
 import './ShareModal.css';
 import ShareButton from '../ShareButton/ShareButton';
-import { useGenerateInviteLinkMutation } from '@src/store/api/documentSlice';
+
 import { useParams } from 'react-router';
+import { useGenerateInviteLink } from '@src/shared/hooks/useDocument';
 
 const ShareModal = () => {
   const { documentId } = useParams();
-  const [generateInviteLink, { isLoading, data }] = useGenerateInviteLinkMutation();
+  const { mutateAsync: generateInviteLink, isPending: isLoading, data } = useGenerateInviteLink();
 
   const handleOpen = async () => {
     if (documentId) {

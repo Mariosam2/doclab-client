@@ -1,19 +1,19 @@
-import { useEditor, EditorContent, Editor } from "@tiptap/react";
-import * as Y from "yjs";
-import { HocuspocusProvider } from "@hocuspocus/provider";
-import StarterKit from "@tiptap/starter-kit";
-import "./TipTap.css";
-import Toolbar from "../ToolBar/Toolbar";
-import TaskList from "@tiptap/extension-task-list";
-import TaskItem from "@tiptap/extension-task-item";
-import Highlight from "@tiptap/extension-highlight";
-import Collaboration from "@tiptap/extension-collaboration";
-import CollaborationCaret from "@tiptap/extension-collaboration-caret";
-import { useGetProfileQuery } from "@src/store/api/profileSlice";
-import { CURSOR_COLORS, getUserColor } from "@src/shared/helpers";
-import { FileHandler } from "@tiptap/extension-file-handler";
-import { Image } from "@tiptap/extension-image";
-import { useUploadImageMutation } from "@src/store/api/imageSlice";
+import { useEditor, EditorContent, Editor } from '@tiptap/react';
+import * as Y from 'yjs';
+import { HocuspocusProvider } from '@hocuspocus/provider';
+import StarterKit from '@tiptap/starter-kit';
+import './TipTap.css';
+import Toolbar from '../ToolBar/Toolbar';
+import TaskList from '@tiptap/extension-task-list';
+import TaskItem from '@tiptap/extension-task-item';
+import Highlight from '@tiptap/extension-highlight';
+import Collaboration from '@tiptap/extension-collaboration';
+import CollaborationCaret from '@tiptap/extension-collaboration-caret';
+import { CURSOR_COLORS, getUserColor } from '@src/shared/helpers';
+import { FileHandler } from '@tiptap/extension-file-handler';
+import { Image } from '@tiptap/extension-image';
+import { useProfile } from '@src/shared/hooks/useProfile';
+import { useUploadImage } from '@src/shared/hooks/useImage';
 
 interface TipTapProps {
   provider: HocuspocusProvider;
@@ -22,21 +22,21 @@ interface TipTapProps {
 }
 
 const Tiptap = ({ provider, yDoc, documentId }: TipTapProps) => {
-  const { data: profile } = useGetProfileQuery();
-  const [upload] = useUploadImageMutation();
+  const { data: profile } = useProfile();
+  const { mutateAsync: uploadImage } = useUploadImage();
 
   const uploadAndInsert = async (editor: Editor, file: File, pos?: number) => {
     const formData = new FormData();
-    formData.append("image", file);
-    if (documentId) formData.append("documentId", documentId);
-    const result = await upload(formData).unwrap();
+    formData.append('image', file);
+    if (documentId) formData.append('documentId', documentId);
+    const result = await uploadImage(formData);
     const url = result.data.url;
 
     if (pos !== undefined) {
       editor
         .chain()
         .focus()
-        .insertContentAt(pos, { type: "image", attrs: { src: url } })
+        .insertContentAt(pos, { type: 'image', attrs: { src: url } })
         .run();
     } else {
       editor.chain().focus().setImage({ src: url }).run();
@@ -51,12 +51,7 @@ const Tiptap = ({ provider, yDoc, documentId }: TipTapProps) => {
       TaskList,
       Image,
       FileHandler.configure({
-        allowedMimeTypes: [
-          "image/png",
-          "image/jpeg",
-          "image/gif",
-          "image/webp",
-        ],
+        allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
         onDrop: (editor, files, pos) => {
           files.forEach((file) => uploadAndInsert(editor, file, pos));
         },
@@ -73,9 +68,7 @@ const Tiptap = ({ provider, yDoc, documentId }: TipTapProps) => {
 
         user: {
           name: profile?.data.username,
-          color: profile?.data.userId
-            ? getUserColor(profile?.data.userId)
-            : CURSOR_COLORS[0],
+          color: profile?.data.userId ? getUserColor(profile?.data.userId) : CURSOR_COLORS[0],
         },
       }),
     ],

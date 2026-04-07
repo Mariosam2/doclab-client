@@ -1,31 +1,32 @@
-import { createBrowserRouter } from "react-router";
-import Landing from "./features/Landing/Landing";
-import NotFound from "./features/NotFound/NotFound";
-import LoginForm from "./features/Auth/LoginForm/LoginForm";
-import Documents from "./features/Dashboard/components/Documents/Documents";
-import App from "./App";
-import RegisterForm from "./features/Auth/Register/RegisterForm";
-import Summary from "./features/Dashboard/components/Summary/Summary";
-import Editor from "./features/Dashboard/components/Editor/Editor";
+import { createBrowserRouter } from 'react-router';
+import Landing from './features/Landing/Landing';
+import NotFound from './features/NotFound/NotFound';
+import LoginForm from './features/Auth/LoginForm/LoginForm';
+import Documents from './features/Dashboard/components/Documents/Documents';
+import App from './App';
+import RegisterForm from './features/Auth/Register/RegisterForm';
+import Summary from './features/Dashboard/components/Summary/Summary';
+import Editor from './features/Dashboard/components/Editor/Editor';
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <App />,
+    HydrateFallback: () => null,
     children: [
       {
         element: <Landing />,
         index: true,
       },
       {
-        path: "home",
+        path: 'home',
         element: <Landing />,
         index: true,
       },
       {
-        path: "auth",
+        path: 'auth',
         lazy: () =>
-          import("./features/Auth/layouts/AuthLayout").then((m) => ({
+          import('./features/Auth/layouts/AuthLayout').then((m) => ({
             Component: m.default,
           })),
         children: [
@@ -34,19 +35,19 @@ const router = createBrowserRouter([
             index: true,
           },
           {
-            path: "login",
+            path: 'login',
             element: <LoginForm />,
           },
           {
-            path: "register",
+            path: 'register',
             element: <RegisterForm />,
           },
         ],
       },
       {
-        path: "/dashboard",
+        path: '/dashboard',
         lazy: () =>
-          import("./features/Dashboard/Dashboard").then((m) => ({
+          import('./features/Dashboard/Dashboard').then((m) => ({
             Component: m.default,
           })),
 
@@ -56,15 +57,15 @@ const router = createBrowserRouter([
             index: true,
           },
           {
-            path: "documents",
+            path: 'documents',
             element: <Documents />,
           },
           {
-            path: "summary",
+            path: 'summary',
             element: <Summary />,
           },
           {
-            path: "documents/:documentId",
+            path: 'documents/:documentId',
             element: <Editor />,
           },
         ],
@@ -73,7 +74,7 @@ const router = createBrowserRouter([
   },
 
   {
-    path: "*",
+    path: '*',
     element: <NotFound />,
   },
 ]);

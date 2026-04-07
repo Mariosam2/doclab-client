@@ -1,11 +1,11 @@
-import { useForm } from "react-hook-form";
-import Envelope from "../../../shared/ui/Icons/Envelope";
-import { NavLink } from "react-router";
-import type { RegisterFormPayload } from "@src/shared/types/schemas";
-import { RegisterSchema } from "@src/shared/schemas/RegisterSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import InputPassword from "@src/shared/ui/InputPassword/InputPassword";
-import { useAuthStore } from "@src/shared/store/authStore";
+import { useForm } from 'react-hook-form';
+import Envelope from '../../../shared/ui/Icons/Envelope';
+import { NavLink } from 'react-router';
+import type { RegisterFormPayload } from '@src/shared/types/schemas';
+import { RegisterSchema } from '@src/shared/schemas/RegisterSchema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import InputPassword from '@src/shared/ui/InputPassword/InputPassword';
+import { useAuthStore } from '@src/shared/store/authStore';
 
 const RegisterForm = () => {
   const { signup, loading: isLoading } = useAuthStore();
@@ -15,12 +15,12 @@ const RegisterForm = () => {
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormPayload>({
     defaultValues: {
-      firstname: "",
-      lastname: "",
-      username: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
+      firstname: '',
+      lastname: '',
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
     },
     resolver: zodResolver(RegisterSchema),
   });
@@ -44,11 +44,11 @@ const RegisterForm = () => {
             <input
               className="p-2.5 focus-within:outline-none placeholder:text-c-muted focus-within:ring-0 grow"
               placeholder="John"
-              {...register("firstname")}
+              {...register('firstname')}
               type="text"
             />
           </div>
-          <span className={`h-4 inline-block text-red-500 ${errors.firstname ? "opacity-100" : "opacity-0"}`}>
+          <span className={`h-4 inline-block text-red-500 ${errors.firstname ? 'opacity-100' : 'opacity-0'}`}>
             {errors.firstname?.message}
           </span>
         </div>
@@ -58,11 +58,11 @@ const RegisterForm = () => {
             <input
               className="p-2.5 focus-within:outline-none placeholder:text-c-muted focus-within:ring-0 grow"
               placeholder="Doe"
-              {...register("lastname")}
+              {...register('lastname')}
               type="text"
             />
           </div>
-          <span className={`h-4 inline-block text-red-500 ${errors.lastname ? "opacity-100" : "opacity-0"}`}>
+          <span className={`h-4 inline-block text-red-500 ${errors.lastname ? 'opacity-100' : 'opacity-0'}`}>
             {errors.lastname?.message}
           </span>
         </div>
@@ -73,11 +73,11 @@ const RegisterForm = () => {
           <input
             className="p-2.5 focus-within:outline-none placeholder:text-c-muted focus-within:ring-0 grow"
             placeholder="johndoe1234"
-            {...register("username")}
+            {...register('username')}
             type="text"
           />
         </div>
-        <span className={`h-4 inline-block text-red-500 ${errors.username ? "opacity-100" : "opacity-0"}`}>
+        <span className={`h-4 inline-block text-red-500 ${errors.username ? 'opacity-100' : 'opacity-0'}`}>
           {errors.username?.message}
         </span>
       </div>
@@ -88,18 +88,18 @@ const RegisterForm = () => {
           <input
             className="p-2.5 focus-within:outline-none placeholder:text-c-muted focus-within:ring-0 grow"
             placeholder="john.doe@example.mail"
-            {...register("email")}
+            {...register('email')}
             type="text"
           />
         </div>
-        <span className={`h-4 inline-block text-red-500 ${errors.email ? "opacity-100" : "opacity-0"}`}>
+        <span className={`h-4 inline-block text-red-500 ${errors.email ? 'opacity-100' : 'opacity-0'}`}>
           {errors.email?.message}
         </span>
       </div>
 
-      <InputPassword register={register("password")} error={errors.password} />
+      <InputPassword register={register('password')} error={errors.password} />
       <InputPassword
-        register={register("confirmPassword")}
+        register={register('confirmPassword')}
         error={errors.confirmPassword}
         placeholder="Confirm password"
       />
@@ -108,7 +108,8 @@ const RegisterForm = () => {
         <button
           type="submit"
           disabled={isLoadingButton}
-          className={`btn-primary w-full mt-4 p-2.5 text-white text-shadow-white cursor-pointer ${isLoadingButton ? "loading" : ""}`}>
+          className={`btn-primary w-full mt-4 p-2.5 text-white text-shadow-white cursor-pointer ${isLoadingButton ? 'loading' : ''}`}
+        >
           Sign Up
         </button>
       </div>

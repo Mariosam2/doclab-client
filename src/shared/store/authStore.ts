@@ -1,10 +1,10 @@
-import { authApi } from "@shared/services/authService";
-import { create } from "zustand";
-import * as z from "zod";
-import type { LoginSchema } from "../schemas/LoginSchema";
-import { getErrorMessage, showToast } from "../helpers";
-import { ToastType } from "../enums/ToastType.enum";
-import type { RegisterSchema } from "../schemas/RegisterSchema";
+import { authApi } from '@shared/services/authService';
+import { create } from 'zustand';
+import * as z from 'zod';
+import type { LoginSchema } from '../schemas/LoginSchema';
+import { getErrorMessage, showToast } from '../helpers';
+import { ToastType } from '../enums/ToastType.enum';
+import type { RegisterSchema } from '../schemas/RegisterSchema';
 
 interface AuthStore {
   accessToken: string | null;
@@ -32,7 +32,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
       const { data } = await authApi.login(credentials);
       set({ accessToken: data.accessToken, loggedIn: true, loading: false });
     } catch (err) {
-      showToast("Something went wrong", getErrorMessage(err), ToastType.DANGER);
+      showToast('Something went wrong', getErrorMessage(err), ToastType.DANGER);
       set({ error: getErrorMessage(err), loading: false });
     }
   },
@@ -43,7 +43,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
       const { data } = await authApi.register(payload);
       set({ accessToken: data.accessToken, loggedIn: true, loading: false });
     } catch (err) {
-      showToast("Something went wrong", getErrorMessage(err), ToastType.DANGER);
+      showToast('Something went wrong', getErrorMessage(err), ToastType.DANGER);
       set({ error: getErrorMessage(err), loading: false });
     }
   },
@@ -53,7 +53,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
       const { data } = await authApi.refreshToken();
       set({ accessToken: data.accessToken, loggedIn: true, loading: false });
     } catch (err) {
-      showToast("Something went wrong", getErrorMessage(err), ToastType.DANGER);
+      showToast('Something went wrong', getErrorMessage(err), ToastType.DANGER);
       set({ error: getErrorMessage(err), loading: false });
     }
   },
@@ -64,7 +64,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
       const { success } = await authApi.checkAuth();
       set({ loggedIn: success, loading: false });
     } catch (err) {
-      showToast("Something went wrong", getErrorMessage(err), ToastType.DANGER);
+      showToast('Something went wrong', getErrorMessage(err), ToastType.DANGER);
       set({ error: getErrorMessage(err), loading: false });
     }
   },
@@ -75,7 +75,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
       await authApi.logout();
       set({ accessToken: null, loggedIn: false, loading: false });
     } catch (err) {
-      showToast("Something went wrong", getErrorMessage(err), ToastType.DANGER);
+      showToast('Something went wrong', getErrorMessage(err), ToastType.DANGER);
       set({ error: getErrorMessage(err), loading: false });
     }
   },
@@ -85,7 +85,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     try {
       await authApi.forgotPassword(payload);
     } catch (err) {
-      showToast("Something went wrong", getErrorMessage(err), ToastType.DANGER);
+      showToast('Something went wrong', getErrorMessage(err), ToastType.DANGER);
       set({ error: getErrorMessage(err), loading: false });
     }
   },
@@ -94,7 +94,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     try {
       await authApi.resetPassword(payload);
     } catch (err) {
-      showToast("Something went wrong", getErrorMessage(err), ToastType.DANGER);
+      showToast('Something went wrong', getErrorMessage(err), ToastType.DANGER);
       set({ error: getErrorMessage(err), loading: false });
     }
   },

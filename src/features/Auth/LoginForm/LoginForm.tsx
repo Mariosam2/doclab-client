@@ -1,12 +1,12 @@
-import { useForm } from "react-hook-form";
-import Envelope from "@src/shared/ui/Icons/Envelope";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginSchema } from "../../../shared/schemas/LoginSchema";
-import "./LoginForm.css";
-import type { LoginFormPayload } from "@src/shared/types/schemas";
-import { NavLink } from "react-router";
-import InputPassword from "@src/shared/ui/InputPassword/InputPassword";
-import { useAuthStore } from "@src/shared/store/authStore";
+import { useForm } from 'react-hook-form';
+import Envelope from '@src/shared/ui/Icons/Envelope';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { LoginSchema } from '../../../shared/schemas/LoginSchema';
+import './LoginForm.css';
+import type { LoginFormPayload } from '@src/shared/types/schemas';
+import { NavLink } from 'react-router';
+import InputPassword from '@src/shared/ui/InputPassword/InputPassword';
+import { useAuthStore } from '@src/shared/store/authStore';
 
 const LoginForm = () => {
   const { login, loading: isLoading } = useAuthStore();
@@ -17,8 +17,8 @@ const LoginForm = () => {
     formState: { errors, isSubmitting },
   } = useForm<LoginFormPayload>({
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
     resolver: zodResolver(LoginSchema),
   });
@@ -41,23 +41,24 @@ const LoginForm = () => {
           <input
             className="p-2.5 focus-within:outline-none placeholder:text-c-muted focus-within:ring-0 grow"
             placeholder="john.doe@example.mail"
-            {...register("email")}
+            {...register('email')}
             type="text"
             name="email"
             id="email"
           />
         </div>
 
-        <span className={`h-4 inline-block text-red-500 ${errors.email ? "opacity-100" : "opacity-0"}`}>
+        <span className={`h-4 inline-block text-red-500 ${errors.email ? 'opacity-100' : 'opacity-0'}`}>
           {errors.email?.message}
         </span>
       </div>
-      <InputPassword register={register("password")} error={errors.password} placeholder="••••••••" />
+      <InputPassword register={register('password')} error={errors.password} placeholder="••••••••" />
       <div className="actions mb-2.5">
         <button
           type="submit"
           disabled={isLoadingButton}
-          className={`btn-primary w-full mt-4 p-2.5 text-white text-shadow-white cursor-pointer ${isLoadingButton ? "loading" : ""}`}>
+          className={`btn-primary w-full mt-4 p-2.5 text-white text-shadow-white cursor-pointer ${isLoadingButton ? 'loading' : ''}`}
+        >
           Sign In
         </button>
       </div>

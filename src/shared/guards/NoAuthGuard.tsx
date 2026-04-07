@@ -1,6 +1,6 @@
-import { useEffect, useState, type ReactElement } from "react";
-import { useNavigate } from "react-router";
-import { useAuthStore } from "../store/authStore";
+import { useEffect, useState, type ReactElement } from 'react';
+import { useNavigate } from 'react-router';
+import { useAuthStore } from '../store/authStore';
 
 interface AuthGuardProps {
   children: ReactElement;
@@ -14,7 +14,7 @@ const NoAuthGuard = ({ children }: AuthGuardProps) => {
     checkAuth()
       .then(() => {
         setHasAuth(true);
-        navigate("/dashboard");
+        navigate('/dashboard');
       })
       .catch(() => {
         setHasAuth(false);

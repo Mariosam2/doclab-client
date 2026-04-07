@@ -1,6 +1,6 @@
 import { ToastType } from '@src/shared/enums/ToastType.enum';
 import { showToast } from '@src/shared/helpers';
-import { useDocumentStore } from '@src/shared/store/documentStore';
+import { useCreateDocument } from '@src/shared/hooks/useDocument';
 import DocumentPlus from '@src/shared/ui/Icons/DocumentPlus';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
@@ -11,7 +11,7 @@ interface CreateDocumentProps {
 
 const CreateDocument = ({ onLoadingChange }: CreateDocumentProps) => {
   const navigate = useNavigate();
-  const { createDocument, loading: isLoading, idOut, setIdOut } = useDocumentStore();
+  const { mutateAsync: createDocument, isPending: isLoading } = useCreateDocument();
 
   useEffect(() => {
     onLoadingChange(isLoading);
@@ -19,9 +19,8 @@ const CreateDocument = ({ onLoadingChange }: CreateDocumentProps) => {
 
   const handleCreateDocument = async () => {
     try {
-      await createDocument({ content: '' });
+      const { idOut } = await createDocument({ content: '' });
       navigate(`/dashboard/documents/${idOut}`);
-      setIdOut(null);
       showToast('Document created successfully', 'Your document has been created successfully', ToastType.SUCCESS);
     } catch (error) {
       console.error(error);

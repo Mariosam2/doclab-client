@@ -1,4 +1,4 @@
-import { useAcceptInviteMutation } from '@src/store/api/documentSlice';
+/* import { useAcceptInviteMutation } from '@src/store/api/documentSlice';
 import { useEffect } from 'react';
 import { useParams } from 'react-router';
 
@@ -17,3 +17,4 @@ const AcceptInvite = () => {
 };
 
 export default AcceptInvite;
+ */

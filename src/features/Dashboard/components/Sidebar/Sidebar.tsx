@@ -1,17 +1,17 @@
-import "./Sidebar.css";
-import DoclabFlaskSVG from "@src/assets/doclab_flask.svg";
-import { useGetProfileQuery } from "@src/store/api/profileSlice";
-import Avatar from "../Avatar/Avatar";
-import Document from "@src/shared/ui/Icons/DocumentText";
-import Sparkle from "@src/shared/ui/Icons/Sparkle";
-import SidebarLink from "./components/SidebarLink/SidebarLink";
-import { LayoutGroup } from "framer-motion";
+import './Sidebar.css';
+import DoclabFlaskSVG from '@src/assets/doclab_flask.svg';
+import Avatar from '../Avatar/Avatar';
+import Document from '@src/shared/ui/Icons/DocumentText';
+import Sparkle from '@src/shared/ui/Icons/Sparkle';
+import SidebarLink from './components/SidebarLink/SidebarLink';
+import { LayoutGroup } from 'framer-motion';
+import { useProfile } from '@src/shared/hooks/useProfile';
 
 const Sidebar = () => {
-  const { data: profile } = useGetProfileQuery();
-  console.log("profile", profile?.data);
+  const { data: profile } = useProfile();
+  console.log('profile', profile?.data);
   const profileFullName =
-    profile?.data.firstname && profile?.data.lastname ? `${profile.data.firstname}+${profile.data.lastname}` : "A";
+    profile?.data.firstname && profile?.data.lastname ? `${profile.data.firstname}+${profile.data.lastname}` : 'A';
   const FALLBACK_URL = `https://ui-avatars.com/api/?name=${profileFullName}&background=1a0a2e&color=ccccff`;
 
   return (

@@ -1,14 +1,14 @@
-import { useAuthStore } from "../store/authStore";
+import { useAuthStore } from '../store/authStore';
 
 let refreshPromise: Promise<void> | null = null;
 export const apiFetch = async (path: string, withPrefix: boolean = true, options?: RequestInit) => {
   const getToken = () => useAuthStore.getState().accessToken;
 
   const doFetch = (token: string | null) =>
-    fetch(`${import.meta.env.VITE_API_URL + (withPrefix ? import.meta.env.VITE_API_PREFIX : "")}${path}`, {
+    fetch(`${import.meta.env.VITE_API_BASE_URL + (withPrefix ? import.meta.env.VITE_API_PREFIX : '')}${path}`, {
       ...options,
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         ...(token && { Authorization: `Bearer ${token}` }),
         ...options?.headers,
       },
@@ -16,7 +16,7 @@ export const apiFetch = async (path: string, withPrefix: boolean = true, options
 
   let res = await doFetch(getToken());
 
-  if (res.status === 401 && !res.url.includes("refresh-token")) {
+  if (res.status === 401 && !res.url.includes('/auth/refresh-token')) {
     if (!refreshPromise) {
       refreshPromise = useAuthStore
         .getState()

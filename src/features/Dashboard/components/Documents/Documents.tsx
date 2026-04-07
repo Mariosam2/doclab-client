@@ -2,21 +2,16 @@ import ShareButton from '@src/shared/ui/ShareButton/ShareButton';
 import CreateDocument from './components/CreateDocument/CreateDocument';
 import './Documents.css';
 import DocumentList from './components/DocumentList/DocumentList';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Loader from '@src/shared/ui/Loader/Loader';
-import { useProfileStore } from '@src/shared/store/profileStore';
-import { useDocumentStore } from '@src/shared/store/documentStore';
+import { useProfile } from '@src/shared/hooks/useProfile';
+import { useDocuments } from '@src/shared/hooks/useDocument';
 
 const Documents = () => {
-  const { documents } = useDocumentStore();
+  const { data } = useDocuments();
   const [isCreating, setIsCreating] = useState(false);
   const [activeTab, setActiveTab] = useState<'mine' | 'shared'>('mine');
-
-  const { profile, getProfile, loading: profileLoading } = useProfileStore();
-
-  useEffect(() => {
-    getProfile();
-  }, []);
+  const { data: profile, isLoading: profileLoading } = useProfile();
 
   const isLoading = profileLoading || isCreating;
 
@@ -48,7 +43,7 @@ const Documents = () => {
             </button>
           </div>
 
-          <DocumentList documents={activeTab === 'mine' ? documents : []} />
+          <DocumentList documents={activeTab === 'mine' ? data?.data || [] : []} />
         </section>
       )}
     </>
