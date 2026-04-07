@@ -1,18 +1,28 @@
-import { ToastType } from "@src/shared/enums/ToastType.enum";
-import { showToast } from "@src/shared/helpers";
-import { useDocumentStore } from "@src/shared/store/documentStore";
-import DocumentPlus from "@src/shared/ui/Icons/DocumentPlus";
+import { ToastType } from '@src/shared/enums/ToastType.enum';
+import { showToast } from '@src/shared/helpers';
+import { useDocumentStore } from '@src/shared/store/documentStore';
+import DocumentPlus from '@src/shared/ui/Icons/DocumentPlus';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router';
 
-import { useNavigate } from "react-router";
+interface CreateDocumentProps {
+  onLoadingChange: (isLoading: boolean) => void;
+}
 
-const CreateDocument = () => {
+const CreateDocument = ({ onLoadingChange }: CreateDocumentProps) => {
   const navigate = useNavigate();
-  const { createDocument, idOut } = useDocumentStore();
+  const { createDocument, loading: isLoading, idOut, setIdOut } = useDocumentStore();
+
+  useEffect(() => {
+    onLoadingChange(isLoading);
+  }, [isLoading]);
+
   const handleCreateDocument = async () => {
     try {
-      await createDocument({ content: "" });
+      await createDocument({ content: '' });
       navigate(`/dashboard/documents/${idOut}`);
-      showToast("Document created successfully", "Your document has been created successfully", ToastType.SUCCESS);
+      setIdOut(null);
+      showToast('Document created successfully', 'Your document has been created successfully', ToastType.SUCCESS);
     } catch (error) {
       console.error(error);
     }
@@ -21,7 +31,8 @@ const CreateDocument = () => {
   return (
     <button
       onClick={handleCreateDocument}
-      className="w-48 h-60 rounded-lg border-2 border-dashed border-gray-300 hover:border-c-medium-purple hover:bg-c-medium-purple/5 flex flex-col items-center justify-center gap-3 transition-all duration-200 cursor-pointer group">
+      className="w-48 h-60 rounded-lg border-2 border-dashed border-gray-300 hover:border-c-medium-purple hover:bg-c-medium-purple/5 flex flex-col items-center justify-center gap-3 transition-all duration-200 cursor-pointer group"
+    >
       <div className="size-12 rounded-full bg-gray-100 group-hover:bg-c-medium-purple/10 flex items-center justify-center transition-colors duration-200">
         <DocumentPlus className="size-6 text-gray-400 group-hover:text-c-medium-purple transition-colors duration-200" />
       </div>

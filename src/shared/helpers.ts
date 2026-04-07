@@ -39,3 +39,10 @@ export const showToast = (title: string, description: string, type: ToastType, t
       break;
   }
 };
+
+
+export const CURSOR_COLORS = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9c74f', '#a78bfa'];
+export const getUserColor = (userId: string) => {
+  const hash = [...userId].reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  return CURSOR_COLORS[hash % CURSOR_COLORS.length];
+};
