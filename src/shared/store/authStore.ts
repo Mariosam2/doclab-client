@@ -53,8 +53,8 @@ export const useAuthStore = create<AuthStore>((set) => ({
       const { data } = await authApi.refreshToken();
       set({ accessToken: data.accessToken, loggedIn: true, loading: false });
     } catch (err) {
-      showToast('Something went wrong', getErrorMessage(err), ToastType.DANGER);
       set({ error: getErrorMessage(err), loading: false });
+      throw err;
     }
   },
 
@@ -64,8 +64,8 @@ export const useAuthStore = create<AuthStore>((set) => ({
       const { success } = await authApi.checkAuth();
       set({ loggedIn: success, loading: false });
     } catch (err) {
-      showToast('Something went wrong', getErrorMessage(err), ToastType.DANGER);
       set({ error: getErrorMessage(err), loading: false });
+      throw err;
     }
   },
 

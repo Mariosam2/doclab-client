@@ -25,8 +25,13 @@ export const apiFetch = async (path: string, withPrefix: boolean = true, options
           refreshPromise = null;
         });
     }
+    try {
+      await refreshPromise;
+    } catch (err) {
+      console.log(err);
+      throw new Error('Session Exprired');
+    }
 
-    await refreshPromise;
     res = await doFetch(getToken());
   }
   if (!res.ok) throw new Error(`Errore ${res.status}: ${res.statusText}`);
