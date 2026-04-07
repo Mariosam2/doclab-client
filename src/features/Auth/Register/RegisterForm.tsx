@@ -1,17 +1,14 @@
 import { useForm } from "react-hook-form";
 import Envelope from "../../../shared/ui/Icons/Envelope";
 import { NavLink } from "react-router";
-import { useRegisterMutation } from "@src/store/api/authSlice";
-import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { ToastType } from "@src/shared/enums/ToastType.enum";
-import { showToast } from "@src/shared/helpers";
 import type { RegisterFormPayload } from "@src/shared/types/schemas";
 import { RegisterSchema } from "@src/shared/schemas/RegisterSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import InputPassword from "@src/shared/ui/InputPassword/InputPassword";
+import { useAuthStore } from "@src/shared/store/authStore";
 
 const RegisterForm = () => {
-  const [signup, { isLoading }] = useRegisterMutation();
+  const { signup, loading: isLoading } = useAuthStore();
   const {
     register,
     handleSubmit,
@@ -31,15 +28,7 @@ const RegisterForm = () => {
   const isLoadingButton = isLoading || isSubmitting;
 
   const handleRegister = handleSubmit(async (data) => {
-    try {
-      await signup(data).unwrap();
-    } catch (error) {
-      showToast(
-        "Register failed",
-        ((error as FetchBaseQueryError).data as { message: string }).message,
-        ToastType.DANGER,
-      );
-    }
+    await signup(data);
   });
 
   return (

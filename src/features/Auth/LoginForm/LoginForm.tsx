@@ -2,18 +2,14 @@ import { useForm } from "react-hook-form";
 import Envelope from "@src/shared/ui/Icons/Envelope";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "../../../shared/schemas/LoginSchema";
-import { showToast } from "../../../shared/helpers";
-import { ToastType } from "../../../shared/enums/ToastType.enum";
 import "./LoginForm.css";
 import type { LoginFormPayload } from "@src/shared/types/schemas";
-import { useLoginMutation } from "@src/store/api/authSlice";
-import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { NavLink } from "react-router";
 import InputPassword from "@src/shared/ui/InputPassword/InputPassword";
+import { useAuthStore } from "@src/shared/store/authStore";
 
 const LoginForm = () => {
-  const [login, { isLoading }] = useLoginMutation();
-
+  const { login, loading: isLoading } = useAuthStore();
   const {
     register,
     handleSubmit,
@@ -30,11 +26,7 @@ const LoginForm = () => {
   const isLoadingButton = isLoading || isSubmitting;
 
   const handleLogin = handleSubmit(async (data) => {
-    try {
-      await login(data).unwrap();
-    } catch (error) {
-      showToast("Login failed", ((error as FetchBaseQueryError).data as { message: string }).message, ToastType.DANGER);
-    }
+    await login(data);
   });
 
   return (
