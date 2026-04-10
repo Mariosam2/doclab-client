@@ -2,11 +2,16 @@ import Tiptap from './components/TipTap/TipTap';
 import * as Y from 'yjs';
 import { HocuspocusProvider } from '@hocuspocus/provider';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import Loader from '@src/shared/ui/Loader/Loader';
+import { showToast } from '@src/shared/helpers';
+import { ToastType } from '@src/shared/enums/ToastType.enum';
+import { useAuthStore } from '@src/shared/store/authStore';
 
 const Editor = () => {
+  const navigate = useNavigate();
   const { documentId } = useParams();
+  const authStore = useAuthStore();
   const [connection, setConnection] = useState<{
     yDoc: Y.Doc;
     provider: HocuspocusProvider;
@@ -18,9 +23,16 @@ const Editor = () => {
       url: `ws://${import.meta.env.VITE_API_HOST}/collaborative-docs`,
       name: `${documentId}`,
       document: yDoc,
-      token: localStorage.getItem('accessToken'),
+      token: authStore.accessToken,
       onSynced() {
         setConnection({ yDoc, provider });
+      },
+      onStatus({ status }) {
+        console.log('status', status);
+        if (status === 'disconnected') {
+          showToast('Errore di connessione', 'Non è stato possibile aprire il documento', ToastType.DANGER);
+          navigate('/dashboard');
+        }
       },
     });
 

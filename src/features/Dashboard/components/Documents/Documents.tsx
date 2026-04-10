@@ -1,4 +1,4 @@
-import ShareButton from '@src/shared/ui/ShareButton/ShareButton';
+/* import ShareButton from '@src/shared/ui/ShareButton/ShareButton'; */
 import CreateDocument from './components/CreateDocument/CreateDocument';
 import './Documents.css';
 import DocumentList from './components/DocumentList/DocumentList';
@@ -20,9 +20,10 @@ const Documents = () => {
       <Loader isLoading={isLoading} variant="dashboard" />
       {!isLoading && (
         <section className="documents w-full  relative py-12  px-12 flex flex-col flex-1">
-          <h1 className="text-4xl mb-12 font-bold">Welcome {profile?.firstname + ' ' + profile?.lastname + '!'}</h1>
+          <h1 className="text-4xl mb-12 font-bold">
+            Welcome {profile?.data.firstname + ' ' + profile?.data.lastname + '!'}
+          </h1>
           <CreateDocument onLoadingChange={setIsCreating} />
-          <ShareButton className="absolute top-12  right-12 flex items-center shadow-md px-2.5 py-1.5 cursor-pointer bg-c-electric-violet will-change-transform text-sky-50" />
 
           <div className="flex gap-2 mt-6">
             <button
@@ -43,7 +44,9 @@ const Documents = () => {
             </button>
           </div>
 
-          <DocumentList documents={activeTab === 'mine' ? data?.data || [] : []} />
+          <DocumentList
+            documents={activeTab === 'mine' ? data?.data.userDocuments || [] : data?.data.editorDocuments || []}
+          />
         </section>
       )}
     </>

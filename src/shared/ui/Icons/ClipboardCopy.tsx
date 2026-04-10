@@ -4,15 +4,17 @@ interface ClipboardCopyProps {
   btnClassName?: string;
   svgClassName?: string;
   text: string;
+  onCopy: () => Promise<void>;
 }
 
-const ClipboardCopy = ({ btnClassName, svgClassName, text }: ClipboardCopyProps) => {
+const ClipboardCopy = ({ btnClassName, svgClassName, text, onCopy }: ClipboardCopyProps) => {
   const [copying, setCopying] = useState(false);
 
   const handleCopy = async () => {
     if (copying) return;
     await navigator.clipboard.writeText(text);
     setCopying(true);
+    await onCopy();
     setTimeout(() => setCopying(false), 1000);
   };
 

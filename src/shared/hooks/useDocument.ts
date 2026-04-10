@@ -10,7 +10,8 @@ import type { IDocument } from '../interfaces/document/IDocument';
 export const useDocuments = () =>
   useQuery({
     queryKey: ['documents'],
-    queryFn: (): Promise<IApiResponse<IDocument[]>> => apiFetch('/documents', true),
+    queryFn: (): Promise<IApiResponse<{ userDocuments: IDocument[]; editorDocuments: IDocument[] }>> =>
+      apiFetch('/documents', true),
   });
 
 export const useDocument = (documentId: string) =>
@@ -19,10 +20,27 @@ export const useDocument = (documentId: string) =>
     queryFn: (): Promise<IApiResponse<IDocument>> => apiFetch(`/documents/${documentId}`, true),
   });
 
-export const useGenerateInviteLink = () =>
+export const useSaveInviteLink = () =>
   useMutation({
-    mutationFn: (paylaod: { documentId: string; permission: string }): Promise<IApiResponse<{ inviteLink: string }>> =>
-      apiFetch(`/documents/invite-link/${paylaod.documentId}`, true, { method: 'POST' }),
+    mutationFn: (paylaod: {
+      uuid: string;
+      documentId: string;
+      permission: string;
+    }): Promise<IApiResponse<{ inviteLink: string }>> =>
+      apiFetch('/documents/invite-link/', true, { method: 'POST', body: JSON.stringify(paylaod) }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['documents'] });
+    },
+  });
+
+export const useCreateDocumentPermission = () =>
+  useMutation({
+    mutationFn: (paylaod: {
+      uuid: string;
+      documentId: string;
+      permission: string;
+    }): Promise<IApiResponse<{ inviteLink: string }>> =>
+      apiFetch('/documents/create-permission/', true, { method: 'POST', body: JSON.stringify(paylaod) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['documents'] });
     },
@@ -31,7 +49,7 @@ export const useGenerateInviteLink = () =>
 export const useCreateDocument = () =>
   useMutation({
     mutationFn: (body: z.infer<typeof AddDocumentSchema>): Promise<IApiResponse<void>> =>
-      apiFetch('/documents', true, { method: 'POST', body: JSON.stringify(body) }),
+      apiFetch('/documents/add-document', true, { method: 'POST', body: JSON.stringify(body) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['documents'] });
     },

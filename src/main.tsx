@@ -10,7 +10,7 @@ import './index.css';
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <Toast.Provider placement="top end" />
+      <Toast.Provider placement="top end" className="z-9999" />
       <RouterProvider router={router} />
     </QueryClientProvider>
   </StrictMode>,

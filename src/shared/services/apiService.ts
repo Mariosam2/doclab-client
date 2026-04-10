@@ -7,8 +7,10 @@ export const apiFetch = async (path: string, withPrefix: boolean = true, options
   const doFetch = (token: string | null) =>
     fetch(`${import.meta.env.VITE_API_BASE_URL + (withPrefix ? import.meta.env.VITE_API_PREFIX : '')}${path}`, {
       ...options,
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
+
         ...(token && { Authorization: `Bearer ${token}` }),
         ...options?.headers,
       },

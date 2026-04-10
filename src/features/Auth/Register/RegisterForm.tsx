@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import Envelope from '../../../shared/ui/Icons/Envelope';
-import { NavLink } from 'react-router';
+import { NavLink, useNavigate } from 'react-router';
 import type { RegisterFormPayload } from '@src/shared/types/schemas';
 import { RegisterSchema } from '@src/shared/schemas/RegisterSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,6 +8,7 @@ import InputPassword from '@src/shared/ui/InputPassword/InputPassword';
 import { useAuthStore } from '@src/shared/store/authStore';
 
 const RegisterForm = () => {
+  const navigate = useNavigate();
   const { signup, loading: isLoading } = useAuthStore();
   const {
     register,
@@ -29,6 +30,7 @@ const RegisterForm = () => {
 
   const handleRegister = handleSubmit(async (data) => {
     await signup(data);
+    navigate('/dashboard');
   });
 
   return (

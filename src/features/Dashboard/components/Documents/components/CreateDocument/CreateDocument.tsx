@@ -18,13 +18,16 @@ const CreateDocument = ({ onLoadingChange }: CreateDocumentProps) => {
   }, [isLoading]);
 
   const handleCreateDocument = async () => {
+    onLoadingChange(true);
     try {
       const { idOut } = await createDocument({ content: '' });
       navigate(`/dashboard/documents/${idOut}`);
       showToast('Document created successfully', 'Your document has been created successfully', ToastType.SUCCESS);
     } catch (error) {
       console.error(error);
+      showToast('Error', 'Something went wrong', ToastType.DANGER);
     }
+    onLoadingChange(false);
   };
 
   return (

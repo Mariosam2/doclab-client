@@ -1,17 +1,17 @@
-import { toast } from "@heroui/react";
-import { ToastType } from "./enums/ToastType.enum";
+import { toast } from '@heroui/react';
+import { ToastType } from './enums/ToastType.enum';
 
 export const getErrorMessage = (error: unknown): string => {
-  let message = "Unknown Error";
+  let message = 'Unknown Error';
 
   if (error instanceof Error) {
     message = error.message;
-  } else if (typeof error === "object" && error != null) {
-    if ("error" in error) {
+  } else if (typeof error === 'object' && error != null) {
+    if ('error' in error) {
       const inner = (error as { error: { data?: { message?: string } } }).error;
-      message = inner?.data?.message ?? "Something went wrong";
-    } else if ("data" in error) {
-      message = (error as { data: { message?: string } }).data?.message ?? "Something went wrong";
+      message = inner?.data?.message ?? 'Something went wrong';
+    } else if ('data' in error) {
+      message = (error as { data: { message?: string } }).data?.message ?? 'Something went wrong';
     }
   }
 
@@ -19,7 +19,7 @@ export const getErrorMessage = (error: unknown): string => {
 };
 
 export const showToast = (title: string, description: string, type: ToastType, timeout: number = 2000) => {
-  const options = { description: description ?? "Something went wrong", timeout };
+  const options = { description: description ?? 'Something went wrong', timeout };
 
   switch (type) {
     case ToastType.SUCCESS:
@@ -39,7 +39,6 @@ export const showToast = (title: string, description: string, type: ToastType, t
       break;
   }
 };
-
 
 export const CURSOR_COLORS = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9c74f', '#a78bfa'];
 export const getUserColor = (userId: string) => {

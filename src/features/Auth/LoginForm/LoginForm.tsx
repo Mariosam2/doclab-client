@@ -4,11 +4,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { LoginSchema } from '../../../shared/schemas/LoginSchema';
 import './LoginForm.css';
 import type { LoginFormPayload } from '@src/shared/types/schemas';
-import { NavLink } from 'react-router';
+import { NavLink, useNavigate } from 'react-router';
 import InputPassword from '@src/shared/ui/InputPassword/InputPassword';
 import { useAuthStore } from '@src/shared/store/authStore';
 
 const LoginForm = () => {
+  const navigate = useNavigate();
   const { login, loading: isLoading } = useAuthStore();
   const {
     register,
@@ -27,6 +28,7 @@ const LoginForm = () => {
 
   const handleLogin = handleSubmit(async (data) => {
     await login(data);
+    navigate('/dashboard');
   });
 
   return (

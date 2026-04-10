@@ -7,6 +7,7 @@ import App from './App';
 import RegisterForm from './features/Auth/Register/RegisterForm';
 import Summary from './features/Dashboard/components/Summary/Summary';
 import Editor from './features/Dashboard/components/Editor/Editor';
+import AcceptInvite from './features/AcceptInvite/AcceptInvite';
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
         path: 'home',
         element: <Landing />,
         index: true,
+      },
+      {
+        path: 'invite/:linkId',
+        element: <AcceptInvite />,
       },
       {
         path: 'auth',
