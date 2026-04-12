@@ -5,16 +5,18 @@ import { apiFetch } from '../services/apiService';
 import { queryClient } from '@src/lib/queryClient';
 import type { IApiResponse } from '../interfaces/api/IApiResponse';
 import type { IDocument } from '../interfaces/document/IDocument';
+import type { ISaveInviteLink } from '../interfaces/document/ISaveInviteLink';
+import type { IDocumentsResponse } from '../interfaces/document/IDocumentsResponse';
+import type { IPermission } from '../interfaces/document/IPermission';
 
 // hooks/useDocuments.ts
-export const useDocuments = () =>
+export const useGetDocuments = () =>
   useQuery({
     queryKey: ['documents'],
-    queryFn: (): Promise<IApiResponse<{ userDocuments: IDocument[]; editorDocuments: IDocument[] }>> =>
-      apiFetch('/documents', true),
+    queryFn: (): Promise<IApiResponse<IDocumentsResponse>> => apiFetch('/documents', true),
   });
 
-export const useDocument = (documentId: string) =>
+export const useGetDocument = (documentId: string) =>
   useQuery({
     queryKey: ['document'],
     queryFn: (): Promise<IApiResponse<IDocument>> => apiFetch(`/documents/${documentId}`, true),
@@ -22,25 +24,23 @@ export const useDocument = (documentId: string) =>
 
 export const useSaveInviteLink = () =>
   useMutation({
-    mutationFn: (paylaod: {
-      uuid: string;
-      documentId: string;
-      permission: string;
-    }): Promise<IApiResponse<{ inviteLink: string }>> =>
-      apiFetch('/documents/invite-link/', true, { method: 'POST', body: JSON.stringify(paylaod) }),
+    mutationFn: (paylaod: ISaveInviteLink): Promise<IApiResponse<{ inviteLink: string }>> =>
+      apiFetch(`/documents/invite-link/${paylaod.documentId}`, true, { method: 'POST', body: JSON.stringify(paylaod) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['documents'] });
     },
   });
 
-export const useCreateDocumentPermission = () =>
+export const useGetDocumentsPermissions = () =>
+  useQuery({
+    queryKey: ['documents-permissions'],
+    queryFn: (): Promise<IApiResponse<IPermission[]>> => apiFetch('/documents/permissions', true),
+  });
+
+export const useUpsertPermission = () =>
   useMutation({
-    mutationFn: (paylaod: {
-      uuid: string;
-      documentId: string;
-      permission: string;
-    }): Promise<IApiResponse<{ inviteLink: string }>> =>
-      apiFetch('/documents/create-permission/', true, { method: 'POST', body: JSON.stringify(paylaod) }),
+    mutationFn: (paylaod: { linkId: string }): Promise<IApiResponse<{ inviteLink: string }>> =>
+      apiFetch('/documents/upsert-permission/', true, { method: 'POST', body: JSON.stringify(paylaod) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['documents'] });
     },

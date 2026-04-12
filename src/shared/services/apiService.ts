@@ -3,14 +3,13 @@ import { useAuthStore } from '../store/authStore';
 let refreshPromise: Promise<void> | null = null;
 export const apiFetch = async (path: string, withPrefix: boolean = true, options?: RequestInit) => {
   const getToken = () => useAuthStore.getState().accessToken;
-
+  const isFormData = options?.body instanceof FormData;
   const doFetch = (token: string | null) =>
     fetch(`${import.meta.env.VITE_API_BASE_URL + (withPrefix ? import.meta.env.VITE_API_PREFIX : '')}${path}`, {
       ...options,
       credentials: 'include',
       headers: {
-        'Content-Type': 'application/json',
-
+        ...(!isFormData && { 'Content-Type': 'application/json' }),
         ...(token && { Authorization: `Bearer ${token}` }),
         ...options?.headers,
       },

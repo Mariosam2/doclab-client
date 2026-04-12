@@ -14,8 +14,10 @@ const ClipboardCopy = ({ btnClassName, svgClassName, text, onCopy }: ClipboardCo
     if (copying) return;
     await navigator.clipboard.writeText(text);
     setCopying(true);
-    await onCopy();
-    setTimeout(() => setCopying(false), 1000);
+    setTimeout(async () => {
+      await onCopy();
+      setCopying(false);
+    }, 1000);
   };
 
   return (

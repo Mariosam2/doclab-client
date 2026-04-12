@@ -47,7 +47,7 @@ const Editor = () => {
     <>
       <Loader isLoading={!connection} variant="document" />
       {connection && (
-        <div className="flex-1 h-full overflow-y-auto">
+        <div className="flex-1 h-full overflow-hidden">
           <Tiptap provider={connection.provider} yDoc={connection.yDoc} documentId={documentId} />
         </div>
       )}

@@ -23,34 +23,43 @@ import ShareModal from '@src/shared/ui/ShareModal/ShareModal';
 
 interface ToolbarProps {
   editor: Editor;
+  isOwner: boolean;
+  isEditable: boolean;
   uploadAndInsert: (editor: Editor, file: File, pos?: number) => void;
 }
 
-const Separator = () => <div className="w-px h-5 bg-gray-300 mx-1" />;
+const Separator = () => <div className="w-px h-5 bg-gray-200 mx-1.5" aria-hidden="true" />;
 
 const ToolbarButton = ({
   onClick,
   isActive = false,
   disabled = false,
   children,
+  ariaLabel,
 }: {
   onClick: () => void;
   isActive?: boolean;
   disabled?: boolean;
   children: React.ReactNode;
+  ariaLabel?: string;
 }) => (
   <button
     onClick={onClick}
     disabled={disabled}
-    className={`p-1.5 rounded transition-colors ${
-      isActive ? 'bg-gray-200' : disabled ? 'opacity-30 cursor-not-allowed' : 'hover:bg-gray-100'
+    aria-label={ariaLabel}
+    className={`p-2 rounded-md transition-colors duration-150 ${
+      disabled
+        ? 'opacity-40 cursor-not-allowed'
+        : isActive
+          ? 'bg-c-periwinkle/30'
+          : 'hover:bg-gray-100 active:bg-gray-200'
     }`}
   >
     {children}
   </button>
 );
 
-const Toolbar = ({ editor, uploadAndInsert }: ToolbarProps) => {
+const Toolbar = ({ editor, uploadAndInsert, isOwner, isEditable }: ToolbarProps) => {
   const state = useEditorState({
     editor,
     selector: (ctx) => ({
@@ -73,12 +82,14 @@ const Toolbar = ({ editor, uploadAndInsert }: ToolbarProps) => {
   });
 
   const setLink = () => {
+    if (!isEditable) return;
     const url = window.prompt('URL:');
     if (!url) return;
     editor.chain().focus().setLink({ href: url }).run();
   };
 
   const addImage = () => {
+    if (!isEditable) return;
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
@@ -90,75 +101,164 @@ const Toolbar = ({ editor, uploadAndInsert }: ToolbarProps) => {
   };
 
   return (
-    <div className="flex items-center">
-      <NavLink to="/dashboard/documents" className="bg-c-electric-violet p-2 h-full">
-        <ArrowLeft className="size-6 text-sky-50 stroke-2" />
+    <div className="flex items-center bg-white border-b border-gray-200 shadow-sm">
+      <NavLink
+        to="/dashboard/documents"
+        className="flex items-center justify-center bg-c-electric-violet h-full px-3 min-w-11 hover:bg-c-medium-purple transition-colors duration-150"
+        aria-label="Back to documents"
+      >
+        <ArrowLeft className="size-5 text-sky-50 stroke-2" />
       </NavLink>
-      <div className="flex items-center gap-1 border-r sticky top-0 bg-white z-10 flex-wrap p-2">
-        <ToolbarButton onClick={() => editor.chain().focus().toggleBold().run()} isActive={state.isBold}>
-          <Bold className="size-4" />
+      <div className="flex items-center gap-0.5 flex-1 sticky top-0 bg-white z-10 flex-wrap px-3 py-2">
+        <ToolbarButton
+          onClick={() => editor.chain().focus().toggleBold().run()}
+          isActive={state.isBold}
+          disabled={!isEditable}
+          ariaLabel="Bold"
+        >
+          <Bold className="size-4.5" />
         </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().toggleItalic().run()} isActive={state.isItalic}>
-          <Italic className="size-4" />
+        <ToolbarButton
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+          isActive={state.isItalic}
+          disabled={!isEditable}
+          ariaLabel="Italic"
+        >
+          <Italic className="size-4.5" />
         </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().toggleUnderline().run()} isActive={state.isUnderline}>
-          <Underline className="size-4" />
+        <ToolbarButton
+          onClick={() => editor.chain().focus().toggleUnderline().run()}
+          isActive={state.isUnderline}
+          disabled={!isEditable}
+          ariaLabel="Underline"
+        >
+          <Underline className="size-4.5" />
         </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().toggleStrike().run()} isActive={state.isStrike}>
-          <Strikethrough className="size-4" />
+        <ToolbarButton
+          onClick={() => editor.chain().focus().toggleStrike().run()}
+          isActive={state.isStrike}
+          disabled={!isEditable}
+          ariaLabel="Strikethrough"
+        >
+          <Strikethrough className="size-4.5" />
         </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().toggleHighlight().run()} isActive={state.isHighlight}>
-          <Highlighter className="size-4" />
+        <ToolbarButton
+          onClick={() => editor.chain().focus().toggleHighlight().run()}
+          isActive={state.isHighlight}
+          disabled={!isEditable}
+          ariaLabel="Highlight"
+        >
+          <Highlighter className="size-4.5" />
         </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().toggleCode().run()} isActive={state.isCode}>
-          <Code className="size-4" />
+        <ToolbarButton
+          onClick={() => editor.chain().focus().toggleCode().run()}
+          isActive={state.isCode}
+          disabled={!isEditable}
+          ariaLabel="Code"
+        >
+          <Code className="size-4.5" />
         </ToolbarButton>
-        <ToolbarButton onClick={addImage}>
-          <Image className="size-4" />
+        <ToolbarButton onClick={addImage} disabled={!isEditable} ariaLabel="Insert image">
+          <Image className="size-4.5" />
+        </ToolbarButton>
+
+        <Separator />
+
+        <ToolbarButton
+          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+          isActive={state.isH1}
+          disabled={!isEditable}
+          ariaLabel="Heading 1"
+        >
+          <Heading1 className="size-4.5" />
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          isActive={state.isH2}
+          disabled={!isEditable}
+          ariaLabel="Heading 2"
+        >
+          <Heading2 className="size-4.5" />
         </ToolbarButton>
 
         <Separator />
 
-        <ToolbarButton onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} isActive={state.isH1}>
-          <Heading1 className="size-4" />
+        <ToolbarButton
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
+          isActive={state.isBulletList}
+          disabled={!isEditable}
+          ariaLabel="Bullet list"
+        >
+          <BulletList className="size-4.5" />
         </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} isActive={state.isH2}>
-          <Heading2 className="size-4" />
+        <ToolbarButton
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+          isActive={state.isOrderedList}
+          disabled={!isEditable}
+          ariaLabel="Numbered list"
+        >
+          <NumberedList className="size-4.5" />
         </ToolbarButton>
-
-        <Separator />
-
-        <ToolbarButton onClick={() => editor.chain().focus().toggleBulletList().run()} isActive={state.isBulletList}>
-          <BulletList className="size-4" />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().toggleOrderedList().run()} isActive={state.isOrderedList}>
-          <NumberedList className="size-4" />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().toggleTaskList().run()} isActive={state.isTaskList}>
-          <TaskList className="size-4" />
-        </ToolbarButton>
-
-        <Separator />
-
-        <ToolbarButton onClick={() => editor.chain().focus().toggleBlockquote().run()} isActive={state.isBlockquote}>
-          <Quote className="size-4" />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().setHorizontalRule().run()}>
-          <HorizontalRule className="size-4" />
-        </ToolbarButton>
-        <ToolbarButton onClick={setLink} isActive={state.isLink}>
-          <LinkIcon className="size-4" />
+        <ToolbarButton
+          onClick={() => editor.chain().focus().toggleTaskList().run()}
+          isActive={state.isTaskList}
+          disabled={!isEditable}
+          ariaLabel="Task list"
+        >
+          <TaskList className="size-4.5" />
         </ToolbarButton>
 
         <Separator />
-        <ToolbarButton onClick={() => editor.chain().focus().undo().run()} disabled={!state.canUndo}>
-          <Undo className="size-4" />
+
+        <ToolbarButton
+          onClick={() => editor.chain().focus().toggleBlockquote().run()}
+          isActive={state.isBlockquote}
+          disabled={!isEditable}
+          ariaLabel="Blockquote"
+        >
+          <Quote className="size-4.5" />
         </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().redo().run()} disabled={!state.canRedo}>
-          <Redo className="size-4" />
+        <ToolbarButton
+          onClick={() => editor.chain().focus().setHorizontalRule().run()}
+          disabled={!isEditable}
+          ariaLabel="Horizontal rule"
+        >
+          <HorizontalRule className="size-4.5" />
+        </ToolbarButton>
+        <ToolbarButton onClick={setLink} isActive={state.isLink} disabled={!isEditable} ariaLabel="Insert link">
+          <LinkIcon className="size-4.5" />
+        </ToolbarButton>
+
+        <Separator />
+        <ToolbarButton
+          onClick={() => editor.chain().focus().undo().run()}
+          disabled={!isEditable || !state.canUndo}
+          ariaLabel="Undo"
+        >
+          <Undo className="size-4.5" />
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() => editor.chain().focus().redo().run()}
+          disabled={!isEditable || !state.canRedo}
+          ariaLabel="Redo"
+        >
+          <Redo className="size-4.5" />
         </ToolbarButton>
       </div>
-      <ShareModal />
+      {!isEditable && (
+        <div className="flex items-center ml-auto mr-3 px-2.5 py-1 rounded-md bg-gray-100 text-gray-500 text-xs font-medium select-none whitespace-nowrap">
+          <svg className="size-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+            />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          View only
+        </div>
+      )}
+      {isOwner && <ShareModal />}
     </div>
   );
 };

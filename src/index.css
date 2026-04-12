@@ -1,6 +1,6 @@
-@import url("./fonts.css");
-@import "tailwindcss";
-@import "@heroui/styles";
+@import url('./fonts.css');
+@import 'tailwindcss';
+@import '@heroui/styles';
 
 @theme {
   --color-c-periwinkle: #ccccff;
@@ -9,10 +9,10 @@
   --color-c-electric-violet: #9933ff;
   --color-c-dark: #1a0a2e;
   --color-c-muted: #c1c1c1;
-  --font-sans: "Satoshi", sans-serif;
-  --font-serif: "Lora", serif;
-  --font-satoshi: "Satoshi", sans-serif;
-  --font-lora: "Lora", serif;
+  --font-sans: 'Satoshi', sans-serif;
+  --font-serif: 'Lora', serif;
+  --font-satoshi: 'Satoshi', sans-serif;
+  --font-lora: 'Lora', serif;
 }
 
 @utility btn-primary {
@@ -45,7 +45,7 @@ button:active {
 }
 
 .btn-primary.loading::after {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   margin: auto;

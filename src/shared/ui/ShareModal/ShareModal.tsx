@@ -3,35 +3,38 @@ import ClipboardCopy from '../Icons/ClipboardCopy';
 import './ShareModal.css';
 import ShareButton from '../ShareButton/ShareButton';
 import { v4 as uuidv4 } from 'uuid';
-import { motion, LayoutGroup } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 import { useParams } from 'react-router';
 import { useSaveInviteLink } from '@src/shared/hooks/useDocument';
 import { useState } from 'react';
-import { Permission } from '@src/shared/enums/Permission.enum';
+import { Permission } from '@src/shared/enums/permission.enum';
 
 const ShareModal = () => {
   const { documentId } = useParams();
   const [inviteLink, setInviteLink] = useState('');
   const [identifier, setIdentifier] = useState('');
   const [permission, setPermission] = useState<Permission>(Permission.VIEW);
+  const [prevPermission, setPrevPermission] = useState(permission);
   const { mutateAsync: saveInviteLink, isPending: isLoading } = useSaveInviteLink();
-
-  const handleOpen = async () => {
-    if (documentId) {
-      setInviteLink(generateLink());
-    }
-  };
 
   const generateLink = () => {
     const identifier = uuidv4();
     setIdentifier(identifier);
-    return import.meta.env.VITE_CLIENT_URL + '/invite/' + identifier;
+    return import.meta.env.VITE_CLIENT_URL + '/dashboard/invite/' + identifier;
   };
+  const handleOpen = () => {
+    setInviteLink(generateLink());
+  };
+
+  if (permission !== prevPermission) {
+    setPrevPermission(permission);
+    setInviteLink(generateLink());
+  }
 
   const handleOnCopy = async () => {
     if (documentId) {
-      await saveInviteLink({ documentId, uuid: identifier, permission });
+      await saveInviteLink({ documentId, linkId: identifier, permission });
     }
   };
 
@@ -44,37 +47,38 @@ const ShareModal = () => {
         <Modal.Container>
           <Modal.Dialog className="max-w-md p-1 rounded-xl">
             <Modal.Body>
-              <LayoutGroup>
-                <div className="flex rounded-lg bg-gray-100 p-1 mb-3">
-                  {[Permission.VIEW, Permission.EDIT].map((value) => (
-                    <button
-                      key={value}
-                      type="button"
-                      onClick={() => setPermission(value)}
-                      className="relative flex-1 rounded-md px-4 py-1.5 text-sm font-medium cursor-pointer z-0"
+              <div className="relative flex rounded-lg bg-gray-100 p-1 mb-3 overflow-x-hidden">
+                <motion.div
+                  className="absolute top-1 bottom-1 w-[calc(50%-2px)] bg-c-medium-purple rounded-md"
+                  animate={{
+                    x: permission === Permission.VIEW ? 0 : '100%',
+                    scaleX: [1, 1.06, 0.96, 1],
+                    scaleY: [1, 0.94, 1.04, 1],
+                  }}
+                  transition={{
+                    x: { type: 'spring', stiffness: 400, damping: 28, mass: 0.8 },
+                    scaleX: { duration: 0.3, times: [0, 0.25, 0.6, 1] },
+                    scaleY: { duration: 0.3, times: [0, 0.25, 0.6, 1] },
+                  }}
+                  style={{ left: 4 }}
+                />
+                {[Permission.VIEW, Permission.EDIT].map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setPermission(value)}
+                    className="relative flex-1 rounded-md px-4 py-1.5 text-sm font-medium cursor-pointer z-10"
+                    aria-pressed={permission === value}
+                    role="tab"
+                  >
+                    <span
+                      className={`relative ${permission === value ? 'text-sky-50' : 'text-gray-600'} transition-colors duration-200`}
                     >
-                      {permission === value && (
-                        <motion.div
-                          layoutId="permission-toggle"
-                          className="absolute inset-0 bg-c-medium-purple rounded-md"
-                          animate={{
-                            scaleX: [1, 1.12, 0.92, 1.03, 1],
-                            scaleY: [1, 0.88, 1.08, 0.97, 1],
-                          }}
-                          transition={{
-                            layout: { type: 'spring', stiffness: 400, damping: 24, mass: 0.8 },
-                            scaleX: { duration: 0.4, times: [0, 0.2, 0.5, 0.75, 1] },
-                            scaleY: { duration: 0.4, times: [0, 0.2, 0.5, 0.75, 1] },
-                          }}
-                        />
-                      )}
-                      <span className={`relative z-10 ${permission === value ? 'text-sky-50' : 'text-gray-600'}`}>
-                        {value === Permission.VIEW ? 'View' : 'Edit'}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </LayoutGroup>
+                      {value === Permission.VIEW ? 'View' : 'Edit'}
+                    </span>
+                  </button>
+                ))}
+              </div>
               <div className="flex items-center gap-2">
                 {isLoading ? (
                   <Skeleton className="h-10 w-full rounded-lg" />

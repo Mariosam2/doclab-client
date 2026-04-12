@@ -25,10 +25,6 @@ const router = createBrowserRouter([
         index: true,
       },
       {
-        path: 'invite/:linkId',
-        element: <AcceptInvite />,
-      },
-      {
         path: 'auth',
         lazy: () =>
           import('./features/Auth/layouts/AuthLayout').then((m) => ({
@@ -72,6 +68,10 @@ const router = createBrowserRouter([
           {
             path: 'documents/:documentId',
             element: <Editor />,
+          },
+          {
+            path: 'invite/:linkId',
+            element: <AcceptInvite />,
           },
         ],
       },

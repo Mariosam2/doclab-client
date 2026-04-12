@@ -5,10 +5,10 @@ import DocumentList from './components/DocumentList/DocumentList';
 import { useState } from 'react';
 import Loader from '@src/shared/ui/Loader/Loader';
 import { useProfile } from '@src/shared/hooks/useProfile';
-import { useDocuments } from '@src/shared/hooks/useDocument';
+import { useGetDocuments } from '@src/shared/hooks/useDocument';
 
 const Documents = () => {
-  const { data } = useDocuments();
+  const { data } = useGetDocuments();
   const [isCreating, setIsCreating] = useState(false);
   const [activeTab, setActiveTab] = useState<'mine' | 'shared'>('mine');
   const { data: profile, isLoading: profileLoading } = useProfile();

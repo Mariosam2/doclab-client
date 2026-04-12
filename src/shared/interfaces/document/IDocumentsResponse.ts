@@ -1,4 +1,4 @@
-import type { IDocument } from "../document/IDocument";
+import type { IDocument } from './IDocument';
 
 export interface IDocumentsResponse {
   userDocuments: IDocument[];

@@ -32,12 +32,15 @@ const DocumentList = ({ documents }: DocumentListProps) => {
               onClick={() => navigate(`/dashboard/documents/${doc.documentId}`)}
               className="group text-left rounded-lg border border-gray-200 overflow-hidden hover:shadow-md hover:border-c-medium-purple/40 transition-all duration-200 cursor-pointer"
             >
-              <div className="h-40 p-4 bg-gray-50 border-b border-gray-100 overflow-hidden">
+              <div className="h-40 relative p-4 bg-gray-50 border-b border-gray-100 overflow-hidden">
                 <div
-                  className="text-[8px] leading-3 text-gray-400 line-clamp-12 pointer-events-none"
-                  dangerouslySetInnerHTML={{
-                    __html: doc.documentContent || '',
+                  className="pointer-events-none absolute inset-0 origin-top-left p-12"
+                  style={{
+                    transform: 'scale(0.3)',
+                    width: '333%', // 100 / 0.3
+                    height: '333%',
                   }}
+                  dangerouslySetInnerHTML={{ __html: doc.documentPreview || '' }}
                 />
               </div>
               <div className="p-3">
