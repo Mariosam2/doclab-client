@@ -46,6 +46,7 @@ const Documents = () => {
 
           <DocumentList
             documents={activeTab === 'mine' ? data?.data.userDocuments || [] : data?.data.editorDocuments || []}
+            showActions={activeTab === 'mine'}
           />
         </section>
       )}

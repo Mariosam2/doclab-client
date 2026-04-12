@@ -14,12 +14,14 @@ import LinkIcon from '@src/shared/ui/Icons/Link';
 import TaskList from '@src/shared/ui/Icons/TaskList';
 import Undo from '@src/shared/ui/Icons/Undo';
 import Redo from '@src/shared/ui/Icons/Redo';
+import Download from '@src/shared/ui/Icons/Download';
 import { Editor, useEditorState } from '@tiptap/react';
 import './Toolbar.css';
-import { NavLink } from 'react-router';
+import { NavLink, useParams } from 'react-router';
 import ArrowLeft from '@src/shared/ui/Icons/ArrowLeft';
 import Image from '@src/shared/ui/Icons/Image';
 import ShareModal from '@src/shared/ui/ShareModal/ShareModal';
+import { useExportPdf, useGetDocument } from '@src/shared/hooks/useDocument';
 
 interface ToolbarProps {
   editor: Editor;
@@ -60,6 +62,9 @@ const ToolbarButton = ({
 );
 
 const Toolbar = ({ editor, uploadAndInsert, isOwner, isEditable }: ToolbarProps) => {
+  const { documentId } = useParams();
+  const { data: documentData } = useGetDocument(documentId!);
+  const { mutateAsync: exportPdf } = useExportPdf();
   const state = useEditorState({
     editor,
     selector: (ctx) => ({
@@ -86,6 +91,16 @@ const Toolbar = ({ editor, uploadAndInsert, isOwner, isEditable }: ToolbarProps)
     const url = window.prompt('URL:');
     if (!url) return;
     editor.chain().focus().setLink({ href: url }).run();
+  };
+
+  const exportDocToPdf = async () => {
+    if (documentData) {
+      const body = {
+        htmlContent: editor.getHTML(),
+        filename: documentData.data.title,
+      };
+      await exportPdf(body);
+    }
   };
 
   const addImage = () => {
@@ -243,6 +258,12 @@ const Toolbar = ({ editor, uploadAndInsert, isOwner, isEditable }: ToolbarProps)
           ariaLabel="Redo"
         >
           <Redo className="size-4.5" />
+        </ToolbarButton>
+
+        <Separator />
+
+        <ToolbarButton onClick={exportDocToPdf} ariaLabel="Export as HTML">
+          <Download className="size-4.5" />
         </ToolbarButton>
       </div>
       {!isEditable && (

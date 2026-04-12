@@ -1,7 +1,12 @@
 import { useAuthStore } from '../store/authStore';
 
 let refreshPromise: Promise<void> | null = null;
-export const apiFetch = async (path: string, withPrefix: boolean = true, options?: RequestInit) => {
+export const apiFetch = async (
+  path: string,
+  withPrefix: boolean = true,
+  options?: RequestInit,
+  responseType: 'json' | 'blob' = 'json',
+) => {
   const getToken = () => useAuthStore.getState().accessToken;
   const isFormData = options?.body instanceof FormData;
   const doFetch = (token: string | null) =>
@@ -36,5 +41,5 @@ export const apiFetch = async (path: string, withPrefix: boolean = true, options
     res = await doFetch(getToken());
   }
   if (!res.ok) throw new Error(`Errore ${res.status}: ${res.statusText}`);
-  return res.json();
+  return responseType === 'blob' ? res.blob() : res.json();
 };

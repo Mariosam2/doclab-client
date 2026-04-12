@@ -20,12 +20,13 @@ export const useGetDocument = (documentId: string) =>
   useQuery({
     queryKey: ['document'],
     queryFn: (): Promise<IApiResponse<IDocument>> => apiFetch(`/documents/${documentId}`, true),
+    enabled: !!documentId,
   });
 
 export const useSaveInviteLink = () =>
   useMutation({
-    mutationFn: (paylaod: ISaveInviteLink): Promise<IApiResponse<{ inviteLink: string }>> =>
-      apiFetch(`/documents/invite-link/${paylaod.documentId}`, true, { method: 'POST', body: JSON.stringify(paylaod) }),
+    mutationFn: (body: ISaveInviteLink): Promise<IApiResponse<{ inviteLink: string }>> =>
+      apiFetch('/documents/invite-link/', true, { method: 'POST', body: JSON.stringify(body) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['documents'] });
     },
@@ -39,8 +40,8 @@ export const useGetDocumentsPermissions = () =>
 
 export const useUpsertPermission = () =>
   useMutation({
-    mutationFn: (paylaod: { linkId: string }): Promise<IApiResponse<{ inviteLink: string }>> =>
-      apiFetch('/documents/upsert-permission/', true, { method: 'POST', body: JSON.stringify(paylaod) }),
+    mutationFn: (body: { linkId: string }): Promise<IApiResponse<{ inviteLink: string }>> =>
+      apiFetch('/documents/upsert-permission/', true, { method: 'POST', body: JSON.stringify(body) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['documents'] });
     },
@@ -52,5 +53,54 @@ export const useCreateDocument = () =>
       apiFetch('/documents/add-document', true, { method: 'POST', body: JSON.stringify(body) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['documents'] });
+    },
+  });
+
+export const useUpdateDocument = () =>
+  useMutation({
+    mutationFn: (body: { documentId: string; title: string }): Promise<IApiResponse<void>> =>
+      apiFetch(`/documents/edit-document/${body.documentId}`, true, {
+        method: 'PUT',
+        body: JSON.stringify({ title: body.title }),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['documents'] });
+    },
+  });
+
+export const useDeleteDocument = () =>
+  useMutation({
+    mutationFn: (documentId: string): Promise<IApiResponse<void>> =>
+      apiFetch(`/documents/delete-document/${documentId}`, true, { method: 'DELETE' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['documents'] });
+    },
+  });
+
+export const useGenerateSummary = () =>
+  useMutation({
+    mutationFn: (body: { documentId: string }): Promise<IApiResponse<string>> =>
+      apiFetch('/documents/generate-summary', true, { method: 'POST', body: JSON.stringify(body) }),
+  });
+
+export const useExportPdf = () =>
+  useMutation({
+    mutationFn: async (body: { htmlContent: string; filename: string }) => {
+      const blob = (await apiFetch(
+        '/documents/export-pdf',
+        true,
+        {
+          method: 'POST',
+          body: JSON.stringify(body),
+        },
+        'blob',
+      )) as Blob;
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${body.filename}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
     },
   });
