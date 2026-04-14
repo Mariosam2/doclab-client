@@ -29,13 +29,9 @@ const LoginForm = () => {
 
   const handleLogin = handleSubmit(async (data) => {
     await login(data);
-    const linkId = sessionStorage.getItem('linkId');
-    if (linkId) {
-      navigate(`/accept-invite/${linkId}`);
-      sessionStorage.removeItem('linkId');
-    } else {
-      navigate('/dashboard');
-    }
+    const redirect = sessionStorage.getItem('redirectAfterLogin');
+    navigate(redirect || '/dashboard');
+    sessionStorage.removeItem('redirectAfterLogin');
   });
 
   return (

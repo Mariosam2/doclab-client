@@ -30,13 +30,9 @@ const RegisterForm = () => {
 
   const handleRegister = handleSubmit(async (data) => {
     await signup(data);
-    const linkId = sessionStorage.getItem('linkId');
-    if (linkId) {
-      navigate(`/accept-invite/${linkId}`);
-      sessionStorage.removeItem('linkId');
-    } else {
-      navigate('/dashboard');
-    }
+    const redirect = sessionStorage.getItem('redirectAfterLogin');
+    navigate(redirect || '/dashboard');
+    sessionStorage.removeItem('redirectAfterLogin');
   });
 
   return (
