@@ -30,7 +30,13 @@ const RegisterForm = () => {
 
   const handleRegister = handleSubmit(async (data) => {
     await signup(data);
-    navigate('/dashboard');
+    const linkId = sessionStorage.getItem('linkId');
+    if (linkId) {
+      navigate(`/accept-invite/${linkId}`);
+      sessionStorage.removeItem('linkId');
+    } else {
+      navigate('/dashboard');
+    }
   });
 
   return (

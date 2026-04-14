@@ -8,6 +8,7 @@ import RegisterForm from './features/Auth/Register/RegisterForm';
 import Summary from './features/Dashboard/components/Summary/Summary';
 import Editor from './features/Dashboard/components/Editor/Editor';
 import AcceptInvite from './features/AcceptInvite/AcceptInvite';
+import Profile from './features/Dashboard/components/Profile/Profile';
 
 const router = createBrowserRouter([
   {
@@ -64,6 +65,10 @@ const router = createBrowserRouter([
           {
             path: 'summary',
             element: <Summary />,
+          },
+          {
+            path: 'profile',
+            element: <Profile />,
           },
           {
             path: 'documents/:documentId',

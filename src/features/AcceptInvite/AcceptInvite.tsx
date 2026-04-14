@@ -20,6 +20,7 @@ const AcceptInvite = () => {
         .catch((err) => {
           console.error(err);
           showToast('Something went wrong', getErrorMessage(err), ToastType.DANGER);
+          sessionStorage.setItem('linkId', linkId);
           navigate('/dashboard');
         });
     }

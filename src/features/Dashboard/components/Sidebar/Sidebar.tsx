@@ -59,7 +59,15 @@ const Sidebar = () => {
           </span>
         </button>
 
-        <Avatar maxWidth="40px" imageSrc={profile?.data.avatarUrl ?? FALLBACK_URL} />
+        <button
+          type="button"
+          onClick={() => navigate('/dashboard/profile')}
+          aria-label="Edit profile"
+          title="Edit profile"
+          className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-c-electric-violet cursor-pointer hover:opacity-80 transition-opacity"
+        >
+          <Avatar maxWidth="40px" imageSrc={profile?.data.avatarUrl ?? FALLBACK_URL} />
+        </button>
       </div>
     </div>
   );

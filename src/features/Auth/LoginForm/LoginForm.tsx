@@ -11,6 +11,7 @@ import { useAuthStore } from '@src/shared/store/authStore';
 const LoginForm = () => {
   const navigate = useNavigate();
   const { login, loading: isLoading } = useAuthStore();
+
   const {
     register,
     handleSubmit,
@@ -28,7 +29,13 @@ const LoginForm = () => {
 
   const handleLogin = handleSubmit(async (data) => {
     await login(data);
-    navigate('/dashboard');
+    const linkId = sessionStorage.getItem('linkId');
+    if (linkId) {
+      navigate(`/accept-invite/${linkId}`);
+      sessionStorage.removeItem('linkId');
+    } else {
+      navigate('/dashboard');
+    }
   });
 
   return (

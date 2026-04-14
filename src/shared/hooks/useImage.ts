@@ -6,7 +6,7 @@ import type { IApiResponse } from '../interfaces/api/IApiResponse';
 export const useUploadImage = () =>
   useMutation({
     mutationFn: (body: FormData): Promise<IApiResponse<{ url: string }>> =>
-      apiFetch('/image/upload/document-image', true, {
+      apiFetch('/image/upload', true, {
         method: 'POST',
         body,
       }),
